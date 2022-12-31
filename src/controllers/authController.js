@@ -35,9 +35,6 @@ exports.login = async(req,res,next) =>{
             err.statusCode = 400;
             return next(err);
         }
-        res.status(200).json({
-            status:'success', 
-        })
     }
     catch(error){
         next(error);
