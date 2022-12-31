@@ -11,6 +11,9 @@ const {connectDB} = require('./configs/db')
 connectDB(); 
 app.use(errorHandler);
 
+app.get('/' , (req, res)=>{
+    res.render('home')
+})
 
 app.use((req, res, next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
