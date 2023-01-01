@@ -11,9 +11,7 @@ const {connectDB} = require('./configs/db')
 connectDB(); 
 app.use(errorHandler);
 
-app.get('/' , (req, res)=>{
-    res.render('home')
-})
+
 
 app.use((req, res, next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,8 +23,10 @@ app.use((req, res, next)=>{
     next();
 }); 
 
-const authRoute = require('./routes/authRoute'); 
+const authRoute = require('./routes/authRoute');  
+const productRoute = require('./routes/productRoute');   
 app.use('/api/v1/auth', authRoute);  
+app.use('/api/v1/product', productRoute);  
 
 
 app.all('*',(req, res ,next)=>{
@@ -38,9 +38,3 @@ const port = process.env.PORT || 5000;
  app.listen(port, ()=>{
      console.log(`Server is running on port ${port}`);
  }) 
- if(process.env.NODE_ENV === "production"){
-    app.use(express.static('../client/build'));
-    app.get('*', (req, res)=>{
-        res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'));
-    });
-}
