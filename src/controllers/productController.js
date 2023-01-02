@@ -87,38 +87,42 @@ exports.createOneProduct = async(req, res, next)=>{
     }catch(error){
         next(error);
     }
-}
-
+} 
 exports.updateOneProduct = async(req, res, next)=>{
     try{
         const slug = req.params.slug;
         const categorySlug = req.body.category;
         const category = await Category.findOne({slug:categorySlug});
-        const post = await Post.findOneAndUpdate({slug},{
+        const product = await Product.findOneAndUpdate({slug},{
             ...req.body,
             category
         },{new: true, runValidator: true});
         res.status(200).json({
             status:'success',
-            data:{post}
+            data:{product}
         })
     }catch(error){
         res.json(error)
     }
+} 
+exports.deleteOneProduct= async(req, res, next)=>{
+    try{
+        const {slug} = req.params;
+        const product = await Product.findOneAndDelete(slug); 
+        if(!product){
+            res.status(404).json({
+                message: 'product not found'
+            })
+        }
+        else{
+            await Comment.deleteMany({product_id: slug});
+            res.status(200).json({
+                status: 'success',
+                message: 'product has been deleted' 
+            })
+        }
+
+    }catch(error){
+        res.json(error)
+    }
 }
-
-// exports.deleteOnePost = async(req, res, next)=>{
-//     try{
-//         const {slug} = req.params;
-//         const post = await Post.findOneAndDelete(slug);
-//         await Comment.deleteMany({post_id: slug});
-//         res.status(200).json({
-//             status: 'success',
-//             message: 'Post has been deleted',
-//             data: post
-//         })
-
-//     }catch(error){
-//         res.json(error)
-//     }
-// }

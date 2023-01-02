@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
     image:{ type: String, trim: true ,required: [true, 'Product must have image']},
     thumbnail:{ type: Array},
     desc:{ type: String, trim: true},
-    sku:{ type: String, trim: true,unique: true},
+    sku:{ type: String, trim: true, unique: true, sparse: true },
     stock:{ type: String, trim: true},
     category: [
         {
@@ -24,8 +24,6 @@ const productSchema = new mongoose.Schema({
         }
     ],
     slug: { type: String, slug: "name" , unique: true}
-},{ timestamps:{ createdAt: true, updatedAt:false}})
-
-
+},{ timestamps:{ createdAt: true, updatedAt:false}}) 
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;
