@@ -25,8 +25,12 @@ app.use((req, res, next)=>{
 
 const authRoute = require('./routes/authRoute');  
 const productRoute = require('./routes/productRoute');   
+const categoryRoute = require('./routes/categoryRoute');   
+const collectionRoute = require('./routes/collectionRoute');   
 app.use('/api/v1/auth', authRoute);  
 app.use('/api/v1/product', productRoute);  
+app.use('/api/v1/category', categoryRoute);  
+app.use('/api/v1/collection', collectionRoute);  
 
 
 app.all('*',(req, res ,next)=>{

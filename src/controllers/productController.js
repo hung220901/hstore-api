@@ -76,10 +76,7 @@ exports.getProductById = async(req, res, next)=>{
     }catch(error){
         res.json(error)
     }
-}
-
-
-
+} 
 exports.createOneProduct = async(req, res, next)=>{
     try{ 
         const product = await Product.create({...req.body});
@@ -92,23 +89,23 @@ exports.createOneProduct = async(req, res, next)=>{
     }
 }
 
-// exports.updateOnePost = async(req, res, next)=>{
-//     try{
-//         const slug = req.params.slug;
-//         const categorySlug = req.body.category;
-//         const category = await Category.findOne({slug:categorySlug});
-//         const post = await Post.findOneAndUpdate({slug},{
-//             ...req.body,
-//             category
-//         },{new: true, runValidator: true});
-//         res.status(200).json({
-//             status:'success',
-//             data:{post}
-//         })
-//     }catch(error){
-//         res.json(error)
-//     }
-// }
+exports.updateOneProduct = async(req, res, next)=>{
+    try{
+        const slug = req.params.slug;
+        const categorySlug = req.body.category;
+        const category = await Category.findOne({slug:categorySlug});
+        const post = await Post.findOneAndUpdate({slug},{
+            ...req.body,
+            category
+        },{new: true, runValidator: true});
+        res.status(200).json({
+            status:'success',
+            data:{post}
+        })
+    }catch(error){
+        res.json(error)
+    }
+}
 
 // exports.deleteOnePost = async(req, res, next)=>{
 //     try{
