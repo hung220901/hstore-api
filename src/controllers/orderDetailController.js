@@ -27,6 +27,7 @@ exports.getOrderDetailByUserName = async(req, res, next)=>{
         res.json(error)
     }
 }
+
 exports.createOneOrderDetail = async(req, res, next)=>{
     try{
         const orderDetail = await OrderDetail.create({...req.body});
