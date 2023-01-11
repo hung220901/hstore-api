@@ -28,15 +28,13 @@ const productRoute = require('./routes/productRoute');
 const categoryRoute = require('./routes/categoryRoute');   
 const collectionRoute = require('./routes/collectionRoute');   
 const orderDetailRoute = require('./routes/orderDetailRoute');   
-const orderRoute = require('./routes/orderRouter');   
-const uploadRoute = require('./routes/uploadRoute');   
+const orderRoute = require('./routes/orderRouter');    
 app.use('/api/v1/auth', authRoute);  
 app.use('/api/v1/product', productRoute);  
 app.use('/api/v1/category', categoryRoute);  
 app.use('/api/v1/collection', collectionRoute);  
 app.use('/api/v1/order-detail', orderDetailRoute);  
-app.use('/api/v1/order', orderRoute);  
-app.use('/api/v1/', uploadRoute);  
+app.use('/api/v1/order', orderRoute);   
 
 
 app.all('*',(req, res ,next)=>{

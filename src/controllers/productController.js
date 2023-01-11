@@ -1,5 +1,5 @@
 const Product = require('../models/Product');
- 
+const cloudinary = require('../middlewares/cloudinary')
 
 exports.getAllProducts = async(req, res, next)=>{
     // try{
@@ -78,12 +78,47 @@ exports.getProductById = async(req, res, next)=>{
     }
 } 
 exports.createOneProduct = async(req, res, next)=>{
-    try{ 
-        const product = await Product.create({...req.body});
-        res.status(200).json({
-            status:'success',
-            data:{product}
-        })
+    try{  
+        let urls = []
+        const files = req.files; 
+        if(!files){
+            res.send('please choose file').status(400);
+            return next()
+        }
+        else{ 
+            for(const file of files){
+                const {path} = file;
+                await cloudinary.uploader.upload(path,(err, res)=>{
+                    if(err){
+                        console.log(err);
+                        if(req.file){
+                            cloudinary.uploader.destroy(file.filename)
+                        }
+                        throw Error;
+                    }
+                    return data = {
+                        public_id: res.public_id,
+                        url: res.secure_url
+                    } 
+                })
+                urls.push(data) 
+            }
+            const getImg1 = urls.shift()
+            const product = await Product.create({
+                thumbnail: urls,
+                image:{
+                  public_id: getImg1.public_id,
+                  url:getImg1.url  
+                },
+                ...req.body
+            }); 
+            res.status(200).json({
+                status:'success',
+                data:{product}
+            })  
+        }
+
+
     }catch(error){
         next(error);
     }
