@@ -6,10 +6,17 @@ const orderSchema = new mongoose.Schema({
             ref:'User'
         }
     ],
+    products:[
+        {
+            productId:{type:String},
+            quantity:{type:Number, default: 1},
+        }
+    ],
     total:{type: String, trim: true},
     shippingDate:{type: String,trim:true},
-    isDelivered:{type: Boolean},
-    isConfirm:{type:Boolean},
+    status:{type: String, default: "pending"},
+    note:{type:String, trim:true},
+    address:{type:Object}
 },{ timestamps:{ createdAt: true, updatedAt:false}})
 
 

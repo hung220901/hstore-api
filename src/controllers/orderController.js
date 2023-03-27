@@ -1,8 +1,5 @@
 const Order = require('../models/Order');
-
-
-
-
+ 
 exports.getAllOrder = async(req, res, next)=>{
     const page = parseInt(req.query.page) -1|| 0;
     const total = await Order.countDocuments();
@@ -11,8 +8,7 @@ exports.getAllOrder = async(req, res, next)=>{
 
     try{
         const order = await Order.find({}).skip(page * limit).limit(limit);;
-        res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,order} )
-
+        res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,order} ) 
     }catch(error){
         res.json(error)
     }
@@ -65,3 +61,4 @@ exports.deleteOneOrder = async(req, res, next)=>{
         res.json(error)
     }
 }
+ 

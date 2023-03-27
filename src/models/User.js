@@ -6,6 +6,15 @@ const userSchema = new mongoose.Schema({
     name:{type: String, trim: true, required: [true,'Name must be required']},
     email:{type: String, unique: true, trim: true, required: [true,'Email must be required']},
     role:{type: String, trim: true, default: 'User'},
+    avatar:{ 
+        public_id: {
+            type: String,
+        }, 
+        url:{
+            type:String,
+            require: true
+        }
+    },
     password:{type: String, trim: true, required: [true,'Password must be required'],minlength:[6,'Password must be at least 6 characters']},
     phone:{type: Number,index: { unique: true, sparse: true }},
     address:{type: String, trim: true},
