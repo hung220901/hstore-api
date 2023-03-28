@@ -46,7 +46,7 @@ exports.getCurrentUser = async (req, res, next) =>{
         const data = {user: null}
         if(req.user){
             const user = await User.findOne({_id: req.user.userId});
-            data.user = { userName: user.name, role: user.role}
+            data.user = { userName: user.name, role: user.role,avatar:user.avatar.url}
         }
         res.status(200).json({
             status:'success',
