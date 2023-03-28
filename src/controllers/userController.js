@@ -23,10 +23,10 @@ exports.getAllUsers = async(req, res, next)=>{
         res.json(error)
     }
 } 
-exports.getUserById = async(req, res, next)=>{
+exports.getUserByEmail = async(req, res, next)=>{
     try{
-        const {userIdd} = req.params;
-        const users = await User.findById(userIdd);
+        const {email} = req.params;
+        const users = await User.findOne(email);
         res.status(200).json({
             status:'success',
             data:{users}
@@ -49,6 +49,7 @@ exports.createOneUser = async(req, res, next)=>{
 }
 exports.resetPassword = async(req, res, next)=>{
     try{
+    //   "https://hstore.netlify.app"
         const {email} = req.body;
         const oldUser = await User.findOne({email})
         if(!oldUser){
@@ -60,7 +61,7 @@ exports.resetPassword = async(req, res, next)=>{
         const token = jwt.sign({email:oldUser.email,id:oldUser._id}, secret,{
             expiresIn:"5m",
         });
-        const link = `https://hstore.netlify.app/reset-password/${oldUser._id}/${token}`;
+        const link = `https://localhost:3000/reset-password/${oldUser._id}/${token}`;
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -136,29 +137,27 @@ exports.confirmResetPassword = async(req, res, next)=>{
 } 
 exports.updateOneUser = async(req, res, next)=>{
     try{
-        const {userIdd} = req.params;
-        const {password} = req.body;
-        
+        const email = req.query;
+        const {password} = req.body; 
         const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(password, salt)
- 
-        const user = await User.findByIdAndUpdate(
-            {_id: userIdd},
+        const hashPassword = await bcrypt.hash(password, salt)  
+        const user = await User.findOneAndUpdate(
+            email,
             {...req.body,password : hashPassword},
             { new: true , runValidator: true}
         )
         res.status(200).json({
             status:'success',
             data:{user},
-        })
+        }) 
     }catch(error){
         res.json(error);
     }
 } 
 exports.deleteOneUser = async(req, res, next)=>{
     try{
-        const {userIdd} = req.params;
-        await User.findByIdAndDelete(userIdd);
+        const email = req.query;
+        await User.findOneAndDelete(email);
         res.status(200).json({
             status: 'success',
             message: 'User has been deleted'
