@@ -166,3 +166,107 @@ exports.deleteOneUser = async(req, res, next)=>{
         res.json(error)
     }
 }
+
+
+
+exports.getUserWishlist = async(req, res, next)=>{
+    try{
+        const email = req.query;   
+        const user = await User.findOne(email).populate({
+            path:'wishlist',
+            select:'name price image'
+        })
+        res.status(200).json({
+            status:'success',
+            data:user,
+        }) 
+    }catch(error){
+        res.json(error);
+    }
+} 
+exports.updateUserWishlist = async(req, res, next)=>{
+    try{
+        const email = req.query.email;
+        const productId = req.params.prodId;  
+        // Kiem tra user ton tai
+        const user = await User.findOne({email})
+        const userId = user._id.toString(); 
+        if(user !== null){
+            // kiem tra productId da ton tai
+            const existedItem = user.wishlist.filter(i => i.toString() === productId)
+            if(existedItem.length === 0){ 
+                const userUpdated = await User.findByIdAndUpdate(
+                    {_id:userId},
+                    {$push:{wishlist:productId}},
+                    { new: true , runValidator: true}
+                )
+                res.status(200).json({
+                    status:'success', 
+                    data:userUpdated
+                })  
+            }
+            else{
+                res.status(404).json({
+                    status:'fail', 
+                    msg:'product existed!'
+                }) 
+            }
+        }
+        else{
+            res.status(404).json({
+                status:'fail', 
+                msg:'user not found!'
+            })  
+        }
+
+    }catch(error){
+        res.json(error);
+    }
+} 
+exports.deleteUserWishlist = async(req, res, next)=>{
+    try{
+        const email = req.query.email;
+        const productId = req.params.prodId; 
+        // Kiểm tra sp tồn tại chưa  
+        // const userUpdated = await User.findOneAndUpdate(
+        //     {email,wishlist:productId.toString()},
+        //     {$pull:{wishlist:productId}}, 
+        //     { new: true , runValidator: true}
+        // )
+        // res.status(200).json({
+        //     status:'success',
+        //     data:userUpdated,
+        // })    
+        const user = await User.findOne({email}) 
+        const userId = user._id.toString()
+        if(user !== null){
+            // kiem tra productId da ton tai
+            const existedItem = user.wishlist.filter(i => i.toString() === productId)
+            if(existedItem.length !== 0){
+                const userUpdated = await User.findOneAndUpdate(
+                    {_id:userId},
+                    {$pull:{wishlist:productId}}, 
+                    { new: true , runValidator: true}
+                )
+                res.status(200).json({
+                    status:'success', 
+                    data:userUpdated
+                })  
+            }
+            else{
+                res.status(404).json({
+                    status:'fail', 
+                    msg:'product not existed!'
+                }) 
+            }
+        }
+        else{
+            res.status(404).json({
+                status:'fail', 
+                msg:'user not found!'
+            })  
+        } 
+    }catch(error){
+        res.json(error);
+    }
+} 

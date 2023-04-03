@@ -18,7 +18,12 @@ const userSchema = new mongoose.Schema({
     password:{type: String, trim: true, required: [true,'Password must be required'],minlength:[6,'Password must be at least 6 characters']},
     phone:{type: Number,index: { unique: true, sparse: true }},
     address:{type: String, trim: true},
-    wishlist:{type: Array}
+    wishlist:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'Product' 
+        }
+    ]
 },{timestamps: true})
 
 userSchema.pre('save', function(next){

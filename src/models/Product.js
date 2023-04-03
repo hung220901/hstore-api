@@ -16,6 +16,8 @@ const productSchema = new mongoose.Schema({
             require: true
         }
     },
+    gender:{type:Boolean},
+    show:{type:Boolean,default:true}, 
     thumbnail:{ type: Array},
     desc:{ type: String, trim: true},
     sku:{ type: String, trim: true, unique: true, sparse: true },

@@ -61,6 +61,8 @@ exports.getAllProducts = async(req, res, next)=>{
     // }catch(error){
     //     res.json(error)
     // }
+
+    // normal
     try{
         const product = await Product.find({})
         res.status(200).json({product} )
@@ -126,11 +128,11 @@ exports.createOneProduct = async(req, res, next)=>{
 exports.updateOneProduct = async(req, res, next)=>{
     try{
         const slug = req.params.slug;
-        const categorySlug = req.body.category;
-        const category = await Category.findOne({slug:categorySlug});
+        // const categorySlug = req.body.category;
+        // const category = await Category.findOne({slug:categorySlug});
         const product = await Product.findOneAndUpdate({slug},{
             ...req.body,
-            category
+            // category
         },{new: true, runValidator: true});
         res.status(200).json({
             status:'success',

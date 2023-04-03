@@ -1,4 +1,5 @@
 const Cart = require('../models/Cart');
+const User = require('../models/User');
 
 exports.getAllCart = async(req, res, next)=>{
     const page = parseInt(req.query.page) -1|| 0;
@@ -7,21 +8,25 @@ exports.getAllCart = async(req, res, next)=>{
     const totalPage = Math.ceil(total / limit)
 
     try{
-        const cart = await Cart.find({}).skip(page * limit).limit(limit);;
-        res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,cart} )
+        const cart = await Cart.find().populate({
+            path:'items.product',
+            select:'name'
+        }).skip(page * limit).limit(limit);
+        res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,cart})
 
     }catch(error){
         res.json(error)
     }
 }
-exports.getCartByUserName = async(req, res, next)=>{
+exports.getCartByUser = async(req, res, next)=>{
     try{
-        const {slug} = req.params;
-        const cart = await Cart.findOne({slug:slug});
+        const {id} = req.params; 
+        const user = await User.findById({_id:id})
+        const cart = await Cart.findOne({user}) 
         res.status(200).json({
             status:'success',
-            results: Cart.length,
-            data:{Cart}
+            results: cart.length,
+            data:{cart}
         })
     }catch(error){
         res.json(error)
@@ -29,20 +34,20 @@ exports.getCartByUserName = async(req, res, next)=>{
 }
 
 exports.createOneCart = async(req, res, next)=>{
-    try{
-        const cart = await Cart.create({...req.body});
+    try{  
+        const cart = await Cart.create({...req.body.products}) 
         res.status(200).json({
             status:'success',
-            data:{Cart}
+            data:cart
         })
     }catch(error){
         next(error);
     }
 } 
 exports.updateOneCart = async(req, res, next)=>{
-    try{
-        const slug = req.params.slug;
-        const cart = await Cart.findOneAndUpdate({slug},{...req.body},{new: true, runValidator: true});
+    try{ 
+        const {id} = req.params 
+        const cart = await Cart.findByIdAndUpdate(id,{...req.body},{new: true, runValidator: true});
         res.status(200).json({
             status:'success',
             data:{cart}

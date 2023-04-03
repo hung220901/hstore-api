@@ -7,13 +7,13 @@ exports.getAllOrder = async(req, res, next)=>{
     const totalPage = Math.ceil(total / limit)
 
     try{
-        const order = await Order.find({}).skip(page * limit).limit(limit);;
+        const order = await Order.find({}).populate(['user','products']).skip(page * limit).limit(limit);
         res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,order} ) 
     }catch(error){
         res.json(error)
     }
 }
-exports.getOrderByUserName = async(req, res, next)=>{
+exports.getOrderById = async(req, res, next)=>{
     try{
         const {slug} = req.params;
         const order = await Order.findOne({slug:slug});
@@ -27,7 +27,7 @@ exports.getOrderByUserName = async(req, res, next)=>{
     }
 }
 exports.createOneOrder = async(req, res, next)=>{
-    try{
+    try{ 
         const order = await Order.create({...req.body});
         res.status(200).json({
             status:'success',
