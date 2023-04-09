@@ -165,10 +165,7 @@ exports.deleteOneUser = async(req, res, next)=>{
     }catch(error){
         res.json(error)
     }
-}
-
-
-
+} 
 exports.getUserWishlist = async(req, res, next)=>{
     try{
         const email = req.query;   
@@ -184,7 +181,7 @@ exports.getUserWishlist = async(req, res, next)=>{
         res.json(error);
     }
 } 
-exports.updateUserWishlist = async(req, res, next)=>{
+exports.updateUserWishlistItem = async(req, res, next)=>{
     try{
         const email = req.query.email;
         const productId = req.params.prodId;  
@@ -223,6 +220,36 @@ exports.updateUserWishlist = async(req, res, next)=>{
         res.json(error);
     }
 } 
+exports.updateUserWishlist = async(req, res, next)=>{
+    try{
+        const email = req.query.email; 
+        const userUpdated = await User.findOneAndUpdate(
+            {email:email},
+            { wishlist: req.body.wishlist},
+            { new: true , runValidator: true}
+        )
+        if(!userUpdated){
+            res.status(404).json({
+                status:'Fail', 
+                msg:'User not found'
+            })    
+        }else{ 
+            const user = await User.findOne({email}).populate({
+            path:'wishlist',
+            select:'name price image'
+        })
+            res.status(200).json({
+                status:'success', 
+                data:user
+            })   
+        }   
+    }catch(error){
+        res.json(error);
+    }
+} 
+
+
+
 exports.deleteUserWishlist = async(req, res, next)=>{
     try{
         const email = req.query.email;
