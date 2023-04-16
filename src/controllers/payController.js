@@ -1,4 +1,4 @@
-const stripe = require("stripe")(process.env.STRIPE_KEY)
+const stripe = require("stripe")(process.env.STRIPE_KEY) 
 
 exports.payment = async(req,res)=>{
     stripe.charges.create({

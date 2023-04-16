@@ -20,13 +20,14 @@ exports.getAllCart = async(req, res, next)=>{
         res.json(error)
     }
 }
-exports.getCartByUser = async(req, res, next)=>{
+exports.getCartByEmail = async(req, res, next)=>{
     try{
-        const {id} = req.params; 
-        const user = await User.findById({_id:id})
+        const {email} = req.params; 
+        const user = await User.findOne({email})
+        
         const cart = await Cart.findOne({user}).populate({
             path:'user',
-            select:'-wishlist -password -role -avatar'
+            select:'name email'
         })
         
         await cart.populate('items.product')
@@ -86,8 +87,8 @@ exports.updateOneCart = async(req, res, next)=>{
 } 
 exports.deleteOneCart = async(req, res, next)=>{
     try{
-        const {slug} = req.params;
-        await Cart.findOneAndDelete({slug});
+        const {email} = req.params; 
+        await Cart.findOneAndDelete({email});
         res.status(200).json({
             status: 'success',
             message: 'Cart has been deleted'

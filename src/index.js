@@ -28,6 +28,7 @@ const categoryRoute = require('./routes/categoryRoute');
 const collectionRoute = require('./routes/collectionRoute');   
 const userRouter = require('./routes/userRoute');    
 const cartRoute = require('./routes/cartRoute');   
+const payRoute = require('./routes/payRoute')
 const orderRoute = require('./routes/orderRouter');    
 
 
@@ -38,6 +39,7 @@ app.use('/api/v1/category', categoryRoute);
 app.use('/api/v1/collection', collectionRoute);  
 app.use('/api/v1/user', userRouter);   
 app.use('/api/v1/cart', cartRoute);  
+app.use('/api/v1/checkout',payRoute)
 app.use('/api/v1/order', orderRoute);   
 
 

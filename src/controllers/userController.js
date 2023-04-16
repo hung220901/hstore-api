@@ -2,7 +2,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
- 
+const {nanoid} = require('nanoid')
 
 exports.getAllUsers = async(req, res, next)=>{
     const page = parseInt(req.query.page) -1|| 0;
@@ -37,6 +37,16 @@ exports.getUserByEmail = async(req, res, next)=>{
 } 
 exports.createOneUser = async(req, res, next)=>{
     try{
+        const genPass = nanoid(10)
+        const hashPassword = bcrypt.hashSync(genPass, 10)
+        if(req.body.facebookId || req.body.googleId){
+            const user = await User.create({...req.body, password:hashPassword});
+            const token = jwt.sign({userIdd:user._id}, process.env.APP_SECRET);
+            res.status(200).json({
+                status:'success',
+                data:{token, userName: user.name,avatar: user.avatar.url}
+            })
+        }
         const user = await User.create(req.body);
         const token = jwt.sign({userIdd:user._id}, process.env.APP_SECRET);
         res.status(200).json({
@@ -247,9 +257,6 @@ exports.updateUserWishlist = async(req, res, next)=>{
         res.json(error);
     }
 } 
-
-
-
 exports.deleteUserWishlist = async(req, res, next)=>{
     try{
         const email = req.query.email;

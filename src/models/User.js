@@ -1,6 +1,5 @@
-const express = require('express');
 const bcrypt = require('bcryptjs')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 
 const userSchema = new mongoose.Schema({
     name:{type: String, trim: true, required: [true,'Name must be required']},
@@ -15,6 +14,9 @@ const userSchema = new mongoose.Schema({
             require: true
         }
     },
+    provider:{type:String, default:'normal'},
+    googleId: { type: String,unique: true,sparse: true},
+    facebookId: {type: String,unique: true,sparse: true},
     password:{type: String, trim: true, required: [true,'Password must be required'],minlength:[6,'Password must be at least 6 characters']},
     phone:{type: Number,index: { unique: true, sparse: true }},
     address:{type: String, trim: true},
@@ -27,7 +29,7 @@ const userSchema = new mongoose.Schema({
 },{timestamps: true})
 
 userSchema.pre('save', function(next){
-    let user = this;
+    let user = this; 
     bcrypt.hash(user.password, 10, function(error, hash){
         if(error){
             return next(error);
@@ -36,7 +38,7 @@ userSchema.pre('save', function(next){
             user.password = hash;
             next()
         }
-    })
+    })  
 })
 
 const User = mongoose.model('User', userSchema);
