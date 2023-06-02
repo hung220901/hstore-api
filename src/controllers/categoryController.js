@@ -7,7 +7,7 @@ exports.getAllCategories = async(req, res, next)=>{
     const totalPage = Math.ceil(total / limit)
 
     try{
-        const categories = await Category.find({}).skip(page * limit).limit(limit);;
+        const categories = await Category.find({}).skip(page * limit).limit(limit);
         res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,categories} )
 
     }catch(error){

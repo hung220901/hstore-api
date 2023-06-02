@@ -16,24 +16,20 @@ const productSchema = new mongoose.Schema({
             require: true
         }
     },
-    gender:{type:Boolean},
+    gender:{type:Boolean}, 
     show:{type:Boolean,default:true}, 
     thumbnail:{ type: Array},
     desc:{ type: String, trim: true},
     sku:{ type: String, trim: true, unique: true, sparse: true },
-    stock:{ type: String, trim: true},
+    stock:{ type: String, trim: true}, 
+    averageRating:{type:Number, default:0},
     category: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref:'Category'
         }
     ],
-    collectionProduct: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:'Collection'
-        }
-    ],
+    brand: { type: mongoose.Schema.Types.ObjectId, ref:'Brand'} ,
     slug: { type: String, slug: "name" , unique: true}
 },{ timestamps:{ createdAt: true, updatedAt:false}}) 
 const Product = mongoose.model('Product', productSchema);

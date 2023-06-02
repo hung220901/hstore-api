@@ -6,36 +6,55 @@ exports.getAllOrder = async(req, res, next)=>{
     const total = await Order.countDocuments();
     const limit = parseInt(req.query.limit) || total;
     const totalPage = Math.ceil(total / limit)
-
+    const {email} = req.query 
+    
     try{ 
-        const order = await Order.find({})
-            .populate({ path: 'user', select: 'name email avatar' })
-            .populate({ path: 'items.product', select: 'name price' })
-            .skip(page * limit)
-            .limit(limit);
-        res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,order} ) 
+        if(email){
+            const user = await User.findOne({email})
+            const order = await Order.find({user})
+                .populate({ path: 'user', select: 'name email avatar' })
+                .populate({ path: 'items.product', select: 'name price image' })  
+            res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,order} ) 
+        }
+        else{
+            const order = await Order.find({})
+                .populate({ path: 'user', select: 'name email avatar' })
+                .populate({ path: 'items.product', select: 'name price' })
+                .skip(page * limit)
+                .limit(limit);
+            res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,order} ) 
+        }
     }catch(error){
         res.json(error)
     }
 }
+
 exports.getOrderById = async(req, res, next)=>{
     try{
         const {id} = req.params;
-        const order = await Order.findOne({orderId:id});
+        const order = await Order.findOne({orderId:id})
+            .populate({ path: 'user', select: 'name email avatar' })
+            .populate({ path: 'items.product', select: 'name price image' })  
         res.status(200).json({
-            status:'success',
-            results: order.length,
+            status:'success', 
             data:order
         })
     }catch(error){
         res.json(error)
     }
 }
+
 exports.createOneOrder = async(req, res, next)=>{
     try{ 
-        const {items, email, shippingAddress,...rest} = req.body 
+        const {items, email, shippingAddress,...rest} = req.body.order 
         const userId = await User.findOne({email})
-        const shippingDate = dayjs().add(3, 'day').format('DD/MM/YYYY');
+        const shippingDate = dayjs().add(3, 'day').format('DD/MM/YYYY');  
+        if(!userId){
+            res.status(400).json({
+                status:'fail',
+                msg:'User not found!'
+            })
+        }
         const order = await Order.create({
             items,
             user:userId._id,

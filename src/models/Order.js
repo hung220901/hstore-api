@@ -1,10 +1,8 @@
-const mongoose = require('mongoose'); 
-const { customAlphabet } = require('nanoid');
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',8)
+const mongoose = require('mongoose');  
 const orderSchema = new mongoose.Schema({ 
     orderId: {
         type: String,
-        default: nanoid(),
+        require:true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -30,6 +28,9 @@ const orderSchema = new mongoose.Schema({
     paymentMethod:{type:String,require:true},
     status:{type: String,enum: ['Pending', 'Shipping', 'Delivered', 'Canceled'], default: 'Pending'},
     note:{type:String, trim:true},
+    paymentStatus:{type:String, default:'0'},
+    transId:{type:String},
+    transDate:{type:String},
     shippingAddress: {
         street: { type: String, required: true },
         city: { type: String, required: true },

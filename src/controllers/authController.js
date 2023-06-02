@@ -17,7 +17,7 @@ exports.register = async(req,res,next) =>{
         }
         // Kiểm tra nếu dăng ký social thì tạo mới
         if(googleId){
-            const user = await User.create({ email, name, password: genPass,googleId,provider:'google' }) 
+            const user = await User.create({ email, name, password: genPass,googleId,provider:'google',...req.body }) 
             const token = jwt.sign({userId:user._id}, process.env.APP_SECRET);
             res.status(200).json({
                 status:'success',
@@ -25,7 +25,7 @@ exports.register = async(req,res,next) =>{
             }) 
         }
         else if(facebookId){
-            const user = await User.create({ email, name, password: genPass,facebookId,provider:'facebook' })
+            const user = await User.create({ email, name, password: genPass,facebookId,provider:'facebook' ,...req.body})
             const token = jwt.sign({userId:user._id}, process.env.APP_SECRET);
             res.status(200).json({
                 status:'success',

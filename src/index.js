@@ -1,5 +1,6 @@
 require('dotenv').config(); 
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express(); 
 const cors = require('cors');
 const path = require('path');
@@ -9,8 +10,8 @@ connectDB();
 app.use(cors());
 app.use(express.json()); 
 app.use(express.static(path.join(__dirname,'public'))) 
-
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use((req, res, next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,10 +26,12 @@ app.use((req, res, next)=>{
 const authRoute = require('./routes/authRoute');  
 const productRoute = require('./routes/productRoute');   
 const categoryRoute = require('./routes/categoryRoute');   
-const collectionRoute = require('./routes/collectionRoute');   
-const userRouter = require('./routes/userRoute');    
+const brandRoute = require('./routes/brandRoute');   
+const userRoute = require('./routes/userRoute');    
 const cartRoute = require('./routes/cartRoute');   
 const payRoute = require('./routes/payRoute')
+const imageRoute = require('./routes/imageRoute')
+const reviewRoute = require('./routes/reviewRoute')
 const orderRoute = require('./routes/orderRouter');    
 
 
@@ -36,10 +39,12 @@ const orderRoute = require('./routes/orderRouter');
 app.use('/api/v1/auth', authRoute);  
 app.use('/api/v1/product', productRoute);  
 app.use('/api/v1/category', categoryRoute);  
-app.use('/api/v1/collection', collectionRoute);  
-app.use('/api/v1/user', userRouter);   
+app.use('/api/v1/brand', brandRoute);  
+app.use('/api/v1/user', userRoute);   
+app.use('/api/v1/images', imageRoute);   
 app.use('/api/v1/cart', cartRoute);  
 app.use('/api/v1/checkout',payRoute)
+app.use('/api/v1/review',reviewRoute)
 app.use('/api/v1/order', orderRoute);   
 
 
