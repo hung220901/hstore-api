@@ -5,20 +5,20 @@ const { nanoid } = require('nanoid');
 
 
 exports.register = async(req,res,next) =>{
-    try{
-        // Kiểm tra đăng nhập  bằng social thì sẽ tự gen pass
-        const { name, email, googleId, facebookId } = req.body;
-        // generate password nếu social login
-        const genPass = nanoid(10) 
-        // Kiểm tra user đã tồn tại chưa 
+    try{ 
+        const { name, email, googleId, facebookId } = req.body; 
+        const genPass = nanoid(10)  
         let existingUser = await User.findOne({ email });
         if(existingUser) {
             return res.status(400).json({ message: 'Email already exists' });
-        }
-        // Kiểm tra nếu dăng ký social thì tạo mới
+        } 
         if(googleId){
             const user = await User.create({ email, name, password: genPass,googleId,provider:'google',...req.body }) 
-            const token = jwt.sign({userId:user._id}, process.env.APP_SECRET);
+            const token = jwt.sign(
+                {userId: user._id,role:user.role}, 
+                process.env.APP_SECRET,
+                {expiresIn:'30s'}
+            ); 
             res.status(200).json({
                 status:'success',
                 data:{token, userName: user.name}
@@ -26,7 +26,11 @@ exports.register = async(req,res,next) =>{
         }
         else if(facebookId){
             const user = await User.create({ email, name, password: genPass,facebookId,provider:'facebook' ,...req.body})
-            const token = jwt.sign({userId:user._id}, process.env.APP_SECRET);
+            const token = jwt.sign(
+                {userId: user._id,role:user.role}, 
+                process.env.APP_SECRET,
+                {expiresIn:'30s'}
+            ); 
             res.status(200).json({
                 status:'success',
                 data:{token, userName: user.name}
@@ -35,10 +39,14 @@ exports.register = async(req,res,next) =>{
         else{
             // normal register 
             const user = await User.create(req.body)
-            const token = jwt.sign({userId:user._id}, process.env.APP_SECRET);
+            const token = jwt.sign(
+                {userId: user._id,role:user.role}, 
+                process.env.APP_SECRET,
+                {expiresIn:'30s'}
+            ); 
             res.status(200).json({
                 status:'success',
-                data:{token, userName: user.name}
+                data:{token, userName: user.name, accessToken:token}
             })  
         } 
     }
@@ -73,10 +81,14 @@ exports.login = async(req,res,next) =>{
                 return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' }); 
             }
         } 
-        const token = jwt.sign({userId: user._id}, process.env.APP_SECRET); 
+        const token = jwt.sign(
+            {userId: user._id,role:user.role}, 
+            process.env.APP_SECRET,
+            {expiresIn:'30s'}
+        ); 
         res.status(200).json({
             status:'success',
-            data:{token, userName: user.name, role: user.role, avatar:user.avatar,email:user.email}
+            data:{accessToken:token, userName: user.name, role: user.role, avatar:user.avatar,email:user.email}
         })
  
     }

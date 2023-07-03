@@ -1,14 +1,13 @@
 const jwt = require('jsonwebtoken')
 
-exports.checkCurrentUser = (req, res, next) => {
-    const Authorization = req.header('authorization');
-
+exports.checkCurrentUser = (req, res, next) => { 
+    const Authorization = req.headers.token;
     if(!Authorization){
         req.user = null;
         next();
     }
     else{
-        const token = Authorization.replace("Bearer ", "");
+        const token = Authorization.split(" ")[1];
         try {
             const {userId} = jwt.verify(token, process.env.APP_SECRET);
             req.user = {userId};
