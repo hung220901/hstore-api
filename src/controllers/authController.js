@@ -16,8 +16,7 @@ exports.register = async(req,res,next) =>{
             const user = await User.create({ email, name, password: genPass,googleId,provider:'google',...req.body }) 
             const token = jwt.sign(
                 {userId: user._id,role:user.role}, 
-                process.env.APP_SECRET,
-                {expiresIn:'30s'}
+                process.env.APP_SECRET, 
             ); 
             res.status(200).json({
                 status:'success',
@@ -28,8 +27,7 @@ exports.register = async(req,res,next) =>{
             const user = await User.create({ email, name, password: genPass,facebookId,provider:'facebook' ,...req.body})
             const token = jwt.sign(
                 {userId: user._id,role:user.role}, 
-                process.env.APP_SECRET,
-                {expiresIn:'30s'}
+                process.env.APP_SECRET, 
             ); 
             res.status(200).json({
                 status:'success',
@@ -41,12 +39,11 @@ exports.register = async(req,res,next) =>{
             const user = await User.create(req.body)
             const token = jwt.sign(
                 {userId: user._id,role:user.role}, 
-                process.env.APP_SECRET,
-                {expiresIn:'30s'}
+                process.env.APP_SECRET, 
             ); 
             res.status(200).json({
                 status:'success',
-                data:{token, userName: user.name, accessToken:token}
+                data:{token, userName: user.name, token}
             })  
         } 
     }
@@ -83,12 +80,11 @@ exports.login = async(req,res,next) =>{
         } 
         const token = jwt.sign(
             {userId: user._id,role:user.role}, 
-            process.env.APP_SECRET,
-            {expiresIn:'30s'}
+            process.env.APP_SECRET, 
         ); 
         res.status(200).json({
             status:'success',
-            data:{accessToken:token, userName: user.name, role: user.role, avatar:user.avatar,email:user.email}
+            data:{token ,userName: user.name, role: user.role, avatar:user.avatar,email:user.email}
         })
  
     }
@@ -98,7 +94,7 @@ exports.login = async(req,res,next) =>{
 } 
 exports.getCurrentUser = async (req, res, next) =>{
     try {
-        const data = {user: null}
+        const data = {user: null}  
         if(req.user){
             const user = await User.findOne({_id: req.user.userId});
             data.user = { userName: user.name, role: user.role,avatar:{url:user.avatar.url},email:user.email}

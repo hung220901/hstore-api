@@ -3,76 +3,15 @@ const Category = require('../models/Category');
 const Brand = require('../models/Brand');
 const cloudinary = require('../middlewares/cloudinary')
 
-exports.getAllProducts = async(req, res, next)=>{
-    // try{
-    //     let posts;
-    //     // Pagination
-    //     const page = parseInt(req.query.page) -1|| 0;
-    //     const limit = parseInt(req.query.limit) || 5;
-    //     const total = await Post.countDocuments();
-    //     const totalPage = Math.ceil(total / limit)
-    //     // getPostByCategory
-    //     const cat = req.query.cat;
-    //     if(cat){
-    //         // Find category exist
-    //         const category = await Category.findOne({"slug":cat})
-    //         if(category){
-    //             posts = await Post.find({category}).populate({
-    //                 path: 'author',
-    //                 select: 'name'
-    //             }).populate({
-    //                 path: 'category',
-    //                 select: 'slug name'
-    //             }).populate({
-    //                 path: 'comments',
-    //                 select: 'text',
-    //                 populate:{
-    //                     path: 'user_id',
-    //                     select:'name'
-    //                 },
-    //             });  
-    //             res.status(200).json({posts})             
-    //         }
-    //         else{
-    //             res.status(400).json({
-    //                 'message':'Category not found',
-    //             })
-
-    //         }
-
-
-            
-    //     }
-    //     else{
-    //         posts = await Post.find({}).populate({
-    //             path: 'author',
-    //             select: 'name'
-    //         }).populate({
-    //             path: 'category',
-    //             select: 'slug name'
-    //         }).populate({
-    //             path: 'comments',
-    //             select: 'text',
-    //             populate:{
-    //                 path: 'user_id',
-    //                 select:'name'
-    //             },
-    //         }).skip(page * limit).limit(limit);            
-    //         res.status(200).json({page: page + 1,totalPage: totalPage ,totalItem :total,limit: limit ,posts} )
-    //     }
-    // }catch(error){
-    //     res.json(error)
-    // }
-
-    // normal
-    try{
+exports.getAllProducts = async(req, res, next)=>{ 
+    try{ 
         const product = await Product.find({}).populate({
             path: 'brand',
             select: 'name'
         }).populate({
             path: 'category',
             select: 'slug name'
-        })
+        })   
         res.status(200).json({product} )
     }catch(err){
         res.json({err})

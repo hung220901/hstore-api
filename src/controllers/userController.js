@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
+const Review = require('../models/Review');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
@@ -167,10 +169,13 @@ exports.updateOneUser = async(req, res, next)=>{
 exports.deleteOneUser = async(req, res, next)=>{
     try{
         const email = req.query;
+        const user = await User.findOne(email) 
+        await Review.deleteMany({ userId: user._id });
         await User.findOneAndDelete(email);
+        await Order.deleteMany({user:user._id})
         res.status(200).json({
             status: 'success',
-            message: 'User has been deleted'
+            message: 'User has been deleted' 
         })
     }catch(error){
         res.json(error)
@@ -232,10 +237,10 @@ exports.updateUserWishlistItem = async(req, res, next)=>{
 } 
 exports.updateUserWishlist = async(req, res, next)=>{
     try{
-        const email = req.query.email; 
+        const email = req.query.email;   
         const userUpdated = await User.findOneAndUpdate(
             {email:email},
-            { wishlist: req.body.wishlist},
+            { wishlist: req.body},
             { new: true , runValidator: true}
         )
         if(!userUpdated){

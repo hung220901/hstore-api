@@ -14,11 +14,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use((req, res, next)=>{
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', '*'); 
+    res.setHeader( 'Access-Control-Expose-Headers', 'Content-Range')
+    res.setHeader('Content-Range', 'product 0-20/20');
     res.setHeader(
         'Access-Control-Allow-Headers',
         'Origin, X-Request-Width, Content-Type, Accept, Authorization'
-    );
+    ); 
+    res.setHeader('X-Total-Count','10')
     res.setHeader('Allow-Control-Allow-Methods','GET, POST, PUT, DELETE');
     next();
 }); 

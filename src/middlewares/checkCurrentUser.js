@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 exports.checkCurrentUser = (req, res, next) => { 
-    const Authorization = req.headers.token;
+    const Authorization = req.headers.authorization;  
     if(!Authorization){
         req.user = null;
         next();

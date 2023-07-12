@@ -1,23 +1,8 @@
-const stripe = require("stripe")(process.env.STRIPE_KEY);
 const moment = require('moment'); 
 const Order = require('../models/Order');
 const User = require("../models/User");
 const dayjs = require("dayjs");
-require('dotenv').config();   
-exports.payment = async(req,res)=>{
-    stripe.charges.create({
-        source:req.body.tokenId,
-        amount:req.body.amount,
-        currency:"usd",
-    },(stripeErr, stripeRes)=>{
-        if(stripeErr){
-            res.status(500).json(stripeErr)
-        }
-        else{
-            res.status(200).json(stripeRes)
-        }
-    });
-}
+require('dotenv').config();    
 
 // CREATE URL 
 exports.createPaymentVNPAY = async(req,res,next)=>{
@@ -323,27 +308,7 @@ exports.refundVNPay = async(req,res,next)=>{
             console.log(error);
         });
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 function sortObject(obj) {
 	let sorted = {};
 	let str = [];
