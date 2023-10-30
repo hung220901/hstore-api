@@ -39,8 +39,8 @@ exports.getCartByEmail = async(req, res, next)=>{
 }
 
 exports.createOneCart = async(req, res, next)=>{
-    try{  
-        const {items, email, totalPrice} = req.body.data
+    try{   
+        const {items, email, totalPrice} = req.body
         const userId = await User.findOne({email}) 
         const cart = await Cart.create({
             items,

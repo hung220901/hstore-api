@@ -6,7 +6,7 @@ exports.checkCurrentUser = (req, res, next) => {
         req.user = null;
         next();
     }
-    else{
+    else{ 
         const token = Authorization.split(" ")[1];
         try {
             const {userId} = jwt.verify(token, process.env.APP_SECRET);

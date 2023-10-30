@@ -94,7 +94,7 @@ exports.login = async(req,res,next) =>{
 } 
 exports.getCurrentUser = async (req, res, next) =>{
     try {
-        const data = {user: null}  
+        const data = {user: null}    
         if(req.user){
             const user = await User.findOne({_id: req.user.userId});
             data.user = { userName: user.name, role: user.role,avatar:{url:user.avatar.url},email:user.email}
